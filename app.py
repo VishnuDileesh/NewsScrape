@@ -1,7 +1,7 @@
 from newspaper import Article
 from bs4 import BeautifulSoup
 import requests
-
+from flask import Flask, render_template
 
 class Newsarticle:
 
@@ -27,7 +27,6 @@ site_data = site.text
 
 soup = BeautifulSoup(site_data, 'html.parser')
 
-print(soup.title)
 
 # loop through all blog posts in home page
 blog_posts = soup.find("div", class_="blog-posts")
@@ -43,6 +42,8 @@ for story_link in  story_links:
 
 list_articles = []
 
+
+i = 0
 
 for news_url in news_urls:
 
@@ -71,15 +72,50 @@ for news_url in news_urls:
 
     summary = article.summary
 
-    article1 = Newsarticle(title, author, keywords, summary)
+    i += 1
 
 
-    list_articles.append(article1)
+    article_num = 'article_' + str(i) 
+
+    article_num = Newsarticle(title, author, keywords, summary)
+
+
+    list_articles.append(article_num)
 
 
 
 
-for article in list_articles:
+app = Flask(__name__)
 
-    article.get_article()
+@app.route('/')
+def index():
 
+    #data = []
+
+    data = {}
+
+    for article in list_articles:
+
+        #article_data = article.get_article()
+
+        data[article.article_title] = {
+                'author': article.article_author,
+                'keywords': article.article_keywords,
+                'summary': article.article_summary
+        }
+
+    
+
+#       print(article.article_title)
+
+     #   data.append(article_data)
+
+
+
+
+
+    return render_template("index.html", data=data)
+
+
+if __name__ == "__main__":
+    app.run()
