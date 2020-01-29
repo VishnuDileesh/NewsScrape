@@ -2,6 +2,7 @@ from newspaper import Article
 from bs4 import BeautifulSoup
 import requests
 
+
 #grab data from thehackernews home page
 site = requests.get('https://thehackernews.com')
 
@@ -24,4 +25,23 @@ for story_link in  story_links:
     news_urls.append(url)
 
 
-print(news_urls)
+for news_url in news_urls:
+
+    article = Article(news_url)
+
+    article.download()
+
+    article.parse()
+
+    print(article.authors)
+
+    article.nlp()
+
+    print(article.keywords)
+
+    print(article.summary)
+
+
+
+
+
