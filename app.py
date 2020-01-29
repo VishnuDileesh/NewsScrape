@@ -94,16 +94,29 @@ def index():
 
     data = {}
 
+
+    article_num = 0
+
     for article in list_articles:
+
+        article_num += 1
+
+        data[article_num] = {}
+
+        data[article_num]['title'] = article.article_title
+
+        data[article_num]['author'] = article.article_author[0]
+
+        data[article_num]['summary'] = article.article_summary
+
 
         #article_data = article.get_article()
 
-        data[article.article_title] = {
-                'author': article.article_author,
-                'keywords': article.article_keywords,
-                'summary': article.article_summary
-        }
+        #data[article.article_title] = {}
 
+        #data[article.article_title]['author'] = article.article_author
+        #data[article.article_title]['keywords'] = article.article_keywords
+        #data[article.article_title]['summary'] = article.article_summary
     
 
 #       print(article.article_title)
@@ -112,9 +125,53 @@ def index():
 
 
 
+    #print(data[1])
+
+    #print(data[1]['author'])
 
 
-    return render_template("index.html", data=data)
+    # iterating over outer dictionary keys
+    #for i in data:
+    #    print(i)
+
+
+    #iterating over values of outer dictionary
+    #for i in data:
+    #    print(i, " : " , data[i])
+
+
+
+    # print keys of inner dictionary
+    #for i in data:
+
+     #   for j in data[i]:
+     #       print(j)
+
+
+    # print keys and values of inner dictionary
+
+    #for i in data:
+
+    #    for j in data[i]:
+    #        print(j, ":", data[i])
+
+    # print values of inner dictionary
+
+    for i in data:
+
+        for j in data[i]:
+
+            print(data[i][j])
+
+    print(' ')
+    print(type(data))
+
+
+
+
+
+    return render_template("index.html", articles=data)
+
 
 
 if __name__ == "__main__":
