@@ -2,6 +2,12 @@ from newspaper import Article
 from bs4 import BeautifulSoup
 import requests
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+import os
+
+project_dir = os.path.dirname(os.path.abspath(__file__))
+database_file = "sqlite:///{}".format(os.path.join(project_dir, "news_scrape.db"))
+
 
 class Newsarticle:
 
@@ -86,6 +92,12 @@ for news_url in news_urls:
 
 
 app = Flask(__name__)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_file
+app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+app.config["SECRET_KEY"] = "newisthesecretofsecretscrape"
+
+db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
