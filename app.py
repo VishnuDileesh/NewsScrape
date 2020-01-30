@@ -9,140 +9,123 @@ project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "news_scrape.db"))
 
 
-class Newsarticle:
-
-    def __init__(self, title, author, keywords, summary):
-        self.article_title = title
-        self.article_author = author
-        self.article_keywords = keywords
-        self.article_summary = summary
-
-    def get_article(self):
-        #print(self.article_title)
-        #print(self.article_author)
-        #print(self.article_keywords)
-        #print(self.article_summary)
-
-        return [self.article_title, self.article_author, self.article_keywords, self.article_summary]
-
-
-#grab data from thehackernews home page
-site = requests.get('https://thehackernews.com')
-
-site_data = site.text
-
-soup = BeautifulSoup(site_data, 'html.parser')
-
-
-# loop through all blog posts in home page
-blog_posts = soup.find("div", class_="blog-posts")
-
-news_urls = []
-
-story_links = soup.find_all('a', class_="story-link")
-
-
-for story_link in  story_links:
-    url = story_link.get('href')
-    news_urls.append(url)
-
-list_articles = []
-
-
-i = 0
-
-for news_url in news_urls:
-
-    article = Article(news_url)
-
-    article.download()
-
-    article.parse()
-
-#    print(article.title)
-#    print(article.publish_date)
-
-#    print(article.authors)
-
-    article.nlp()
-
-#    print(article.keywords)
-
-#    print(article.summary)
-
-    title = article.title
-
-    author = article.authors
-
-    keywords = article.keywords
-
-    summary = article.summary
-
-    i += 1
-
-
-    article_num = 'article_' + str(i) 
-
-    article_num = Newsarticle(title, author, keywords, summary)
-
-
-    list_articles.append(article_num)
-
-
-
-
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
-app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "newisthesecretofsecretscrape"
 
 db = SQLAlchemy(app)
 
 
+
 # Article model
 
-class Article(db.Model):
+class Articlelist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     author = db.Column(db.String(100))
     summary = db.Column(db.Text())
 
 
+
+# New Class code goes here
+
+class NewsArticle:
+
+    def __init__(self, news_urls):
+        self.news_urls = news_urls
+        
+        for news_url in self.news_urls:
+
+
+            article = Article(news_url)
+
+            article.download()
+            
+            #print(article.html)
+
+           
+            article.parse()
+
+            #print(article.authors)
+
+            self.title = article.title
+
+            self.author = article.authors[0]
+
+            article.nlp()
+
+            self.summary = article.summary
+
+            #self.summary = article.summary
+
+            print(self.summary)
+
+            new_article = Articlelist(title=self.title, author=self.author, summary=self.summary)
+
+            db.session.add(new_article)
+            db.session.commit()
+
+
+
+        def get_article(self):
+            return [self.title, self.author, self.summary]
+
+
+
+
+
+# New Class code ends here
+
+
+
+
 @app.route('/')
 def index():
-
-    db.session.query(Article).delete()
-    db.session.commit()
-
-    #data = []
-
-    data = {}
+    # new code goes here
+    #grab data from thehackernews home page
 
 
-    article_num = 0
-
-    for article in list_articles:
-
-        article_num += 1
-
-        data[article_num] = {}
-
-        data[article_num]['title'] = article.article_title
-
-        data[article_num]['author'] = article.article_author[0]
-
-        data[article_num]['summary'] = article.article_summary
-
-
-        #article_data = article.get_article()
-
-        #data[article.article_title] = {}
-
-        #data[article.article_title]['author'] = article.article_author
-        #data[article.article_title]['keywords'] = article.article_keywords
-        #data[article.article_title]['summary'] = article.article_summary
     
+
+    db.drop_all()
+
+
+    site = requests.get('https://thehackernews.com')
+
+    site_data = site.text
+
+    soup = BeautifulSoup(site_data, 'html.parser')
+
+
+    # loop through all blog posts in home page
+    blog_posts = soup.find("div", class_="blog-posts")
+
+    news_urls = []
+
+    story_links = soup.find_all('a', class_="story-link")
+
+
+    for story_link in  story_links:
+        url = story_link.get('href')
+        news_urls.append(url)
+
+    db.create_all()
+
+
+    site1 = NewsArticle(news_urls)
+
+
+
+
+
+    # new code ends here
+
+
+
+
+
 
 #       print(article.article_title)
 
@@ -182,20 +165,23 @@ def index():
 
     # print values of inner dictionary
 
-    for i in data:
+    #for i in data:
 
-        for j in data[i]:
+    #    for j in data[i]:
 
-            print(data[i][j])
+    #       print(data[i][j])
 
-    print(' ')
-    print(type(data))
+    #print(' ')
+    #print(type(data))
+
+    articles = Articlelist.query.all()
 
 
+    return render_template("index.html", articles=articles)
 
 
-
-    return render_template("index.html", articles=data)
+#db.session.query(Articledb).delete()
+#db.session.commit()
 
 
 

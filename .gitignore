@@ -2,3 +2,4 @@ env
 .s*
 *.app.py.s*
 .py.s*
+__pycache__

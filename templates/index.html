@@ -7,7 +7,16 @@
 	<body>
 		<h1>NewsScrape</h1>
 
+		{% for article in articles %}
+		<div>
+			<h2>{{ article.title }}</h1>
+			<span>{{ article.author }}</span>
+			<p>{{ article.summary }}</p>
 
+		</div>
+		{% endfor %}
+
+<!--
 		<ul>
 
 			{% for article in articles %}
@@ -30,6 +39,6 @@
 				{% endfor %}
 
 			{% endfor %}
-		</ul>
+		</ul> -->
 	</body>
 </html>
