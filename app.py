@@ -92,23 +92,23 @@ def index():
     db.drop_all()
 
 
-    site = requests.get('https://thehackernews.com')
+    site1_content = requests.get('https://thehackernews.com')
 
-    site_data = site.text
+    site1_data = site1_content.text
 
-    soup = BeautifulSoup(site_data, 'html.parser')
+    soup1 = BeautifulSoup(site1_data, 'html.parser')
 
 
     # loop through all blog posts in home page
-    blog_posts = soup.find("div", class_="blog-posts")
+    blog_posts = soup1.find("div", class_="blog-posts")
 
     news_urls = []
 
-    story_links = soup.find_all('a', class_="story-link")
+    story_links1 = soup1.find_all('a', class_="story-link")
 
 
-    for story_link in  story_links:
-        url = story_link.get('href')
+    for story_link1 in  story_links1:
+        url = story_link1.get('href')
         news_urls.append(url)
 
     db.create_all()
