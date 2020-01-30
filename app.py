@@ -60,7 +60,7 @@ class NewsArticle:
 
             #self.summary = article.summary
 
-            print(self.summary)
+            #print(self.summary)
 
             new_article = Articlelist(title=self.title, author=self.author, summary=self.summary)
 
@@ -69,8 +69,6 @@ class NewsArticle:
 
 
 
-        def get_article(self):
-            return [self.title, self.author, self.summary]
 
 
 
@@ -100,7 +98,7 @@ def index():
 
 
     # loop through all blog posts in home page
-    blog_posts = soup1.find("div", class_="blog-posts")
+    #blog_posts = soup1.find("div", class_="blog-posts")
 
     news_urls = []
 
@@ -115,6 +113,41 @@ def index():
 
 
     site1 = NewsArticle(news_urls)
+
+    # site 2
+
+    news_urls.clear()
+
+    site2_content = requests.get('https://www.ehackingnews.com/search/label/Cyber%20Crime?max-results=7')
+
+    site2_data = site2_content.text
+
+    soup2 = BeautifulSoup(site2_data, 'html.parser')
+
+    # loop through all blog posts in home page
+
+    blog_posts = soup2.find_all('article', class_="home-post")
+
+
+    for blog_post in blog_posts:
+
+        #print(blog_post.h2.a.get('href'))
+
+        url = blog_post.h2.a.get('href')
+
+        news_urls.append(url)
+
+    site2 = NewsArticle(news_urls)
+
+        #for h2 in h2s:
+
+            #print(h2.text)
+
+         #   url_link = soup2.find('a')
+
+         #   url = url_link.get('href')
+
+         #   news_urls.append(url)
 
 
 
