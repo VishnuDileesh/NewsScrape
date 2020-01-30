@@ -1,2 +1,4 @@
 env
 .s*
+*.app.py.s*
+.py.s*

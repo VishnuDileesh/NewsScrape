@@ -99,8 +99,21 @@ app.config["SECRET_KEY"] = "newisthesecretofsecretscrape"
 
 db = SQLAlchemy(app)
 
+
+# Article model
+
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    author = db.Column(db.String(100))
+    summary = db.Column(db.Text())
+
+
 @app.route('/')
 def index():
+
+    db.session.query(Article).delete()
+    db.session.commit()
 
     #data = []
 
