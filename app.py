@@ -40,7 +40,10 @@ db.create_all()
 @app.route('/')
 def index():
 
+    scrape_news()
+
     articles = Articlelist.query.all()
+
 
     return render_template("index.html", articles=articles)
 
