@@ -1,9 +1,10 @@
 from newspaper import Article
 from bs4 import BeautifulSoup
 import requests
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 import os
+
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "news_scrape.db"))
@@ -28,8 +29,24 @@ class Articlelist(db.Model):
     summary = db.Column(db.Text())
 
 
+db.create_all()
+
 
 # New Class code goes here
+
+
+
+
+@app.route('/')
+def index():
+
+    articles = Articlelist.query.all()
+
+    return render_template("index.html", articles=articles)
+
+
+
+
 
 class NewsArticle:
 
@@ -69,26 +86,16 @@ class NewsArticle:
 
 
 
-
-
-
-
-
 # New Class code ends here
 
+def scrape_news():
 
-
-
-@app.route('/')
-def index():
-    # new code goes here
-    #grab data from thehackernews home page
-
-
-    
+    print("Scraping News")
 
     db.drop_all()
 
+
+    db.create_all()
 
     site1_content = requests.get('https://thehackernews.com')
 
@@ -139,84 +146,19 @@ def index():
 
     site2 = NewsArticle(news_urls)
 
-        #for h2 in h2s:
-
-            #print(h2.text)
-
-         #   url_link = soup2.find('a')
-
-         #   url = url_link.get('href')
-
-         #   news_urls.append(url)
-
-
-
-
-
-    # new code ends here
-
-
-
-
-
-
-#       print(article.article_title)
-
-     #   data.append(article_data)
-
-
-
-    #print(data[1])
-
-    #print(data[1]['author'])
-
-
-    # iterating over outer dictionary keys
-    #for i in data:
-    #    print(i)
-
-
-    #iterating over values of outer dictionary
-    #for i in data:
-    #    print(i, " : " , data[i])
-
-
-
-    # print keys of inner dictionary
-    #for i in data:
-
-     #   for j in data[i]:
-     #       print(j)
-
-
-    # print keys and values of inner dictionary
-
-    #for i in data:
-
-    #    for j in data[i]:
-    #        print(j, ":", data[i])
-
-    # print values of inner dictionary
-
-    #for i in data:
-
-    #    for j in data[i]:
-
-    #       print(data[i][j])
-
-    #print(' ')
-    #print(type(data))
-
-    articles = Articlelist.query.all()
-
-
-    return render_template("index.html", articles=articles)
-
-
-#db.session.query(Articledb).delete()
-#db.session.commit()
 
 
 
 if __name__ == "__main__":
     app.run()
+
+
+#schedule.every(2).minutes.do(hello())
+
+
+#while True:
+#    schedule.run_pending()
+#    time.sleep(1)
+
+#db.session.query(Articledb).delete()
+#db.session.commit()
