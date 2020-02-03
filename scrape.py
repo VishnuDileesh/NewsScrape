@@ -76,7 +76,36 @@ def scrape_news():
         news_urls.append(url)
 
     site1 = NewsArticle(news_urls)
-        
+
+
+    news_urls.clear()
+
+    site2_content = requests.get('https://www.ehackingnews.com/search/label/Cyber%20Crime?max-results=7')
+
+    site2_data = site2_content.text
+
+    soup2 = BeautifulSoup(site2_data, 'html.parser')
+
+    blog_posts = soup2.find_all('article', class_="home-post")
+
+    for blog_post in blog_posts:
+
+        url = blog_post.h2.a.get('href')
+
+        news_urls.append(url)
+
+    site2 = NewsArticle(news_urls)
+
+
+
+
+
+
+
+
+
+
+
 
 
 scrape_news()
