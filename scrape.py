@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import requests
 import sqlite3
 import os
+import schedule
+import time
 
 
 connection = sqlite3.connect('news_scrape.db')
@@ -61,6 +63,8 @@ def scrape_news():
 
     print("Created Table")
 
+    print("SCRAPPING SITE ONE")
+
     site1_content = requests.get('https://thehackernews.com')
 
     site1_data = site1_content.text
@@ -80,6 +84,8 @@ def scrape_news():
 
     news_urls.clear()
 
+    print("SCRAPPING SITE TWO")
+
     site2_content = requests.get('https://www.ehackingnews.com/search/label/Cyber%20Crime?max-results=7')
 
     site2_data = site2_content.text
@@ -96,16 +102,13 @@ def scrape_news():
 
     site2 = NewsArticle(news_urls)
 
+    print("DONE")
 
 
+#schedule.every(5).minutes.do(scrape_news)
+schedule.every().day.at("24:00").do(scrape_news)
 
 
-
-
-
-
-
-
-
-
-scrape_news()
+while True:
+    schedule.run_pending()
+    time.sleep(1)
