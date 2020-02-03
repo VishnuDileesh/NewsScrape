@@ -32,7 +32,7 @@ class NewsArticle:
 
             self.summary = article.summary
 
-            cursor.execute("""INSERT INTO Articlelist VALUES (?, ?, ?)""", (self.title, self.author, self.summary))
+            cursor.execute("""INSERT INTO Articlelist VALUES (NULL, ?, ?, ?)""", (self.title, self.author, self.summary))
 
 
 
@@ -52,6 +52,7 @@ def scrape_news():
     
     cursor.execute(
     """CREATE TABLE Articlelist(
+        id INTEGER PRIMARY KEY,
         title  TEXT,
         author  TEXT,
         summary  TEXT
