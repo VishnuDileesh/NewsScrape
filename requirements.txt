@@ -6,7 +6,7 @@ Click==7.0
 cssselect==1.1.0
 feedfinder2==0.0.4
 feedparser==5.2.1
-Flask==1.1.1
+Flask==2.3.2
 Flask-SQLAlchemy==2.4.1
 idna==2.8
 itsdangerous==1.1.0
